@@ -1,0 +1,157 @@
+{% extends 'Alev/baze.html' %}
+
+{% block header_style %}
+style="background-image: url('static/Alev/001.png');"
+{% endblock %}
+
+{% block menuLink %}
+    <ul class="submenu">
+        {% for cat in category2 %}
+             <li class="submenuLi"><a class="submenuA" href="{{ cat.get_absolute_url }}">{{ cat.title }}</a>
+                 <div class="repair_kom">
+                     {% for rem in remonts2 %}
+                        {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+                            <ul>
+                                <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+                            </ul>
+                        {% endif %}
+                     {% endfor %}
+                 </div>
+                 <div class="type_repair">
+                     {% for kv in kvartira %}
+                     <ul>
+                         {% if cat.slug == "remont_kvartira" %}
+                          <li class="type_repairLi">{{ kv.title }}
+                          <ul class="li2_name">
+                          {% for rem in remonts2 %}
+
+                                {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+
+                                    <li class="type_kvLi"><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                           </li>
+                          {% endif %}
+                     </ul>
+                     {% endfor %}
+                 </div>
+              </li>
+        {% endfor %}
+
+    </ul>
+{% endblock %}
+
+{% block h1_kalk %}
+<div class="h1_h2">
+    <h1 class="h1">Галерея ремонта <span>квартир, домов и коттеджей</span> в Москве и области</h1>
+<p>Здесь вы можете ознакомиться с примерами наших работ</p>
+</div>
+<div class="calc">
+    <h3>Бесплатный расчет стоимости Вашего ремонта</h3>
+    <form id="calc_form" class="form1" method="post">
+        {% csrf_token %}
+        {{ calc_form_class.as_p }}
+        <input type="hidden" name="calc_submit" value="True">
+        <button id="btn1" class="btn1" name="calc_submit" type="submit">Рассчитать смету</button>
+    </form>
+    <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+</div>
+{% endblock %}
+
+{% block context %}
+
+<div class="conteiner">
+
+    <h2>Галерея наших работ</h2>
+    <div class="gallery">
+    {% for img in image %}
+    <div class="gallery_item">
+       <img class="gallery_asset" src="static/Alev/image{{ img.img.url }}" alt="{{ img.img.name_object }}">
+    </div>
+    {% endfor %}
+    </div>
+
+</div>
+
+<div class="conteiner why">
+    <h2>Почему выбирают Алев-Строй?</h2>
+    <div class="whys whys1">
+        <div class="whyss why1">
+            <p class="order_number">1</p>
+            <p class="order_text">Работаем по официальному договору</p>
+        </div>
+        <div class="whyss why2">
+            <p class="order_number">2</p>
+            <p class="order_text">На все ремонтные работы мы даем гарантию и прописываем ее в договоре</p>
+        </div>
+        <div class="whyss why2">
+            <p class="order_number">3</p>
+            <p class="order_text">Поэтапная оплата ремонта. Прием работ заказчиком и оплата поделены на 4 части.</p>
+        </div>
+    </div>
+    <div class="whys">
+        <div class="whyss why2">
+            <p class="order_number">4</p>
+            <p class="order_text">Цены фиксированны в Договоре, не меняется в процессе выполнения работ</p>
+        </div>
+        <div class="whyss why2">
+            <p class="order_number">5</p>
+            <p class="order_text">Поддерживаем чистоту, а так же Вывозим строительный мусор и помогаем с утилизацией</p>
+        </div>
+        <div class="whyss why1">
+            <p class="order_number">6</p>
+            <p class="order_text">Точность соблюдения сроков работ</p>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block form2 %}
+        <div class="obr1">
+        <h2>Остались вопросы?</h2>
+        <p class="obr1_p">Если вы планируете ремонт, не откладывайте решение на потом!
+            Наша команда готова помочь вам на каждом этапе — от консультации до завершения проекта.
+            Позвоните нам или оставьте заявку на сайте, и мы свяжемся с вами в кратчайшие сроки
+            для обсуждения всех деталей.</p>
+        <form id="request_form" class="form2" method="post">
+        {% csrf_token %}
+        {{ request_form_class.as_p }}
+        <input type="hidden" name="request_submit" value="True">
+        <button class="btn1" name="request_submit" type="submit">Рассчитать смету</button>
+        </form>
+        <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+        </div>
+{% endblock %}
+
+{% block footer %}
+{% for cat in category2 %}
+     <p><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></p>
+        <div>
+        {% for rem in remonts2 %}
+           {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+               <ul>
+                   <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+               </ul>
+           {% endif %}
+        {% endfor %}
+        </div>
+        <div>
+            {% for kv in kvartira %}
+
+                {% for rem in remonts2 %}
+
+                    {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+                    <ul>
+                <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+            </ul>
+                    {% endif %}
+                  {% endfor %}
+
+            {% endfor %}
+        </div>
+{% endfor %}
+{% endblock %}

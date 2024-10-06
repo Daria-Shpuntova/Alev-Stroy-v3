@@ -1,0 +1,227 @@
+{% extends 'Alev/baze.html' %}
+
+{% block header_style %}
+style="background-image: url('static/{{ category.img }}');"
+{% endblock %}
+
+{% block menuLink %}
+    <ul class="submenu">
+        {% for cat in category2 %}
+             <li class="submenuLi"><a class="submenuA" href="{{ cat.get_absolute_url }}">{{ cat.title }}</a>
+                 <div class="repair_kom">
+                     {% for rem in remonts2 %}
+                        {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+                            <ul>
+                                <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+                            </ul>
+                        {% endif %}
+                     {% endfor %}
+                 </div>
+                 <div class="type_repair">
+                     {% for kv in kvartira %}
+                     <ul>
+                         {% if cat.slug == "remont_kvartira" %}
+                          <li class="type_repairLi">{{ kv.title }}
+                          <ul class="li2_name">
+                          {% for rem in remonts2 %}
+
+                                {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+
+                                    <li class="type_kvLi"><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                           </li>
+                          {% endif %}
+                     </ul>
+                     {% endfor %}
+                 </div>
+              </li>
+        {% endfor %}
+
+    </ul>
+{% endblock %}
+
+{% block h1_kalk %}
+<div class="h1_h2">
+    <h1 class="h1">
+        {% if category.h1 != NULL %}
+            {{ category.h1 }}
+        {% endif %}
+        <span>
+        {% if category.h1_span != NULL %}
+            {{ category.h1_span }}
+        {% endif %}
+        </span>
+        {% if category.h1_after_span != NULL %}
+            {{ category.h1_after_span }}
+        {% endif %}
+    </h1>
+<p>
+    {% if category.h1_p != NULL %}
+        {{ category.h1_p }}
+    {% endif %}
+</p>
+</div>
+<div class="calc">
+    <h3>Бесплатный расчет стоимости Вашего ремонта</h3>
+    <form id="calc_form" class="form1" method="post">
+        {% csrf_token %}
+        {{ calc_form_class.as_p }}
+        <input type="hidden" name="calc_submit" value="True">
+        <button id="btn1" class="btn1" name="calc_submit" type="submit">Рассчитать смету</button>
+    </form>
+    <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+</div>
+{% endblock %}
+
+
+
+
+<!--
+
+<div class="call">
+    <div class="btn-call openmodal">
+        <span>Заказать звонок</span>
+    </div>
+    <div class="modalwindow" aria-hidden="true">
+        <div class="modal_dialog">
+             <div class="modal-header">
+                 <a href="#" class="btn-close-m closemodal" aria-hidden="true">X</a>
+             </div>
+
+            <div class="modal-body">
+                <form class="callForm callForm1" id="callForm" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="jh5qujKFBHo29V3eoYWJxlEfTA39etmo6jPom17nz64ghuufA8cNnpfbjkRFbJfj">
+                    <input type="text" name="name_form" class="form-control" placeholder="Введите имя" id="id_name_form">
+                    <input type="text" name="tel_form" class="form-control" placeholder="Введите телефон" id="id_tel_form">
+                    <div class="modal-footer">
+                         <p class="modal_p_checkbox"><input class="checkbox" type="checkbox" checked><span>Даю <a href='../personal'> согласие </a> на обработку персональных данных</span></p>
+                         <button class="btn-send">Заказать звонок</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+-->
+
+
+{% block context %}
+
+<div class="conteiner">
+<h2>{{ category.h2 }}</h2>
+    <p class="h2_p">{{ category.h2_p }}</p>
+{% if category.h2_p2 != NULL %}
+    <p class="h2_p">{{ category.h2_p2 }}</p>
+{% endif %}
+</div>
+
+<div id="serveses" class="conteiner serv">
+    <div class="serves">
+    {% for rem_id in remonts %}
+        {% if rem_id.category_id.title == category.title %}
+        <div class="servises">
+            <div class="serves1">
+                <h4>{{ rem_id.name }}</h4>
+                <p>{{ rem_id.text1|truncatewords:40 }}</p>
+                <a class="rem_url" href="{{ rem_id.get_absolute_url }}">Подробнее..</a>
+            </div>
+            <div class="openmodal">
+                <button class="btn2">Оставить заявку</button>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+    <br><br>
+    <div class="modalwindow" aria-hidden="true">
+        <div class="modal_dialog">
+            <div class="modal-header">
+                <a href="#" class="btn-close-m closemodal" aria-hidden="true">X</a>
+            </div>
+            <div class="modal-body">
+                <form id="callForm" method="post" action="{% url 'home' %}">
+                   {% csrf_token %}
+                   {{ request_form_class.name }}
+                    {{ request_form_class.phone }}
+                    <input type="hidden" name="request_submit" value="True">
+                   <button id="submitModal" class="btn1" type="submit" name="request_submit">Заказать звонок</button>
+                </form>
+               <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+                   <div class="modal-footer">
+                   </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="serves">
+    {% for ser_id in servers %}
+        {% if ser_id.category_id.title == category.title %}
+        <div class="servises">
+            <div class="serves1">
+                <h4>{{ ser_id.title }}</h4>
+                <p>{{ ser_id.text|linebreaks }}</p>
+            </div>
+
+            <div class="openmodal">
+                <button class="btn2">Оставить заявку</button>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+</div>
+</div>
+{% endblock %}
+
+
+
+{% block form2 %}
+        <div class="obr1">
+        <h2>Остались вопросы?</h2>
+        <p class="obr1_p">
+            {% if category.text_call != NULL %}
+                {{ category.text_call }}
+            {% endif %}
+        </p>
+        <form id="request_form" class="form2" method="post">
+        {% csrf_token %}
+        {{ request_form_class.as_p }}
+        <input type="hidden" name="request_submit" value="True">
+        <button class="btn1" name="request_submit" type="submit">Рассчитать смету</button>
+        </form>
+        <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+        </div>
+{% endblock %}
+
+{% block footer %}
+{% for cat in category2 %}
+     <p><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></p>
+        <div>
+        {% for rem in remonts2 %}
+           {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+               <ul>
+                   <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+               </ul>
+           {% endif %}
+        {% endfor %}
+        </div>
+        <div>
+            {% for kv in kvartira %}
+
+                {% for rem in remonts2 %}
+
+                    {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+                    <ul>
+                        <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a></li>
+            </ul>
+                    {% endif %}
+                  {% endfor %}
+
+            {% endfor %}
+        </div>
+{% endfor %}
+{% endblock %}

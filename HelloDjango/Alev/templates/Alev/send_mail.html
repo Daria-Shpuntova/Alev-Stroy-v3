@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+    </style>
+</head>
+<body>
+<h2>Запрос калькулятора</h2>
+
+<p>Тип недвижимости - {{ alls.room_type }} </p>
+<p>Тип ремонта - {{ alls.repair_type }}</p>
+<p>Количество комнат -  {{ alls.room_count }}</p>
+<p>Площадь (м²) - {{ alls.area }} </p>
+<p>Нужен ли дизайн-проект? -
+    {% if alls.design_project %}
+        <span>Да</span>
+    {% else %}
+        <span>Нет</span>
+    {% endif %}
+</p>
+<p>Имя - {{ alls.name }}</p>
+<p>Телефон - {{ alls.phone }}</p>
+
+
+
+</body>
+</html>

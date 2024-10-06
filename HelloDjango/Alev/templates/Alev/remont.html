@@ -1,0 +1,273 @@
+{% extends 'Alev/baze.html' %}
+
+{% block header_style %}
+style="background-image: url('../static/{{ category.img }}');"
+{% endblock %}
+
+{% block menuLink %}
+    <ul class="submenu">
+        {% for cat in category2 %}
+             <li class="submenuLi"><a class="submenuA" href="{{ cat.get_absolute_url }}">{{ cat.title }}</a>
+                 <div class="repair_kom">
+                     {% for rem in remonts2 %}
+                        {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+                            <ul>
+                                <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+                            </ul>
+                        {% endif %}
+                     {% endfor %}
+                 </div>
+                 <div class="type_repair">
+                     {% for kv in kvartira %}
+                     <ul>
+                         {% if cat.slug == "remont_kvartira" %}
+                          <li class="type_repairLi">{{ kv.title }}
+                          <ul class="li2_name">
+                          {% for rem in remonts2 %}
+
+                                {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+
+                                    <li class="type_kvLi"><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                           </li>
+                          {% endif %}
+                     </ul>
+                     {% endfor %}
+                 </div>
+              </li>
+        {% endfor %}
+
+    </ul>
+{% endblock %}
+
+{% block h1_kalk %}
+<div class="h1_h2">
+    <h1 class="h1">
+        {% if remont.h1 != NULL %}
+            {{ remont.h1 }}
+        {% endif %}
+        <span>
+        {% if remont.h1_span != NULL %}
+            {{ remont.h1_span }}
+        {% endif %}
+        </span>
+        {% if remont.h1_after_span != NULL %}
+            {{ remont.h1_after_span }}
+        {% endif %}
+    </h1>
+<p>
+    {% if remont.h1_p != NULL %}
+        {{ remont.h1_p }}
+    {% endif %}
+</p>
+</div>
+<div class="calc">
+    <h3>Бесплатный расчет стоимости Вашего ремонта</h3>
+    <form id="calc_form" class="form1" method="post">
+        {% csrf_token %}
+        {{ calc_form_class.as_p }}
+        <input type="hidden" name="calc_submit" value="True">
+        <button id="btn1" class="btn1" name="calc_submit" type="submit">Рассчитать смету</button>
+    </form>
+    <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+</div>
+{% endblock %}
+
+
+
+{% block context %}
+
+<div class="conteiner">
+<h2>{{ remont.title_h2 }}</h2>
+{% if remont.text1 != NULL %}
+    <p>{{ remont.text1 }}</p>
+{% endif %}
+
+{% if remont.type_id != NULL %}
+    <h3>Этапы ремонта:</h3>
+    <p class="etapi">{{ remont.type_id.etapi|linebreaks }}</p>
+{% endif %}
+
+{% if remont.text2 != NULL %}
+    <p>{{ remont.text2 }}</p>
+{% endif %}
+</div>
+
+
+<div id="serveses" class="conteiner serv">
+    <h2>Наши услуги</h2>
+    <p class="serv_p">Мы предлагаем полный спектр услуг по ремонту квартир, офисов и коммерческих помещений, включая дизайн-проекты и строительство.<br>
+        Наша команда гарантирует высокое качество работ, соблюдение сроков и индивидуальный подход к каждому клиенту.<br>
+        С нами ваш ремонт станет легким и приятным процессом, а результат превзойдет все ваши ожидания!</p>
+        <div class="serves">
+            {% for type_rem in type_remont %}
+            <div class="servises">
+                <div class="serves1">
+                <h4>{{ type_rem.title }}</h4>
+                <h5>от {{ type_rem.price }} руб./м.кв.</h5>
+                <p class="serv_in">Включает в себя:</p>
+                <p>{{ type_rem.text|linebreaks }}</p>
+                </div>
+
+                <div class="openmodal">
+                <button class="btn2">Оставить заявку</button>
+                </div>
+         </div>
+
+            {% endfor %}
+        </div>
+    <div class="modalwindow" aria-hidden="true">
+        <div class="modal_dialog">
+            <div class="modal-header">
+                <a href="#" class="btn-close-m closemodal" aria-hidden="true">X</a>
+            </div>
+            <div class="modal-body">
+                <form id="callForm" method="post" action="{% url 'home' %}">
+                   {% csrf_token %}
+                   {{ request_form_class.name }}
+                    {{ request_form_class.phone }}
+                    <input type="hidden" name="request_submit" value="True">
+                   <button id="submitModal" class="btn1" type="submit" name="request_submit">Заказать звонок</button>
+                </form>
+               <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+                   <div class="modal-footer">
+                   </div>
+            </div>
+
+        </div>
+    </div>
+
+     <h2 class="dop">Дополнительные услуги</h2>
+    <div class="serves">
+        <div class="servises">
+            <div class="serves1">
+                <h4>Ремонт крыш</h4>
+                <ol>
+                    <li>Ремонт кровли:
+                        <ul>
+                            <li>Локальный ремонт – устранение небольших повреждений, таких как трещины, пробоины или отрыв кровельного материала.</li>
+                            <li>Заделка швов – использование специальных герметиков для защиты мест стыков и швов.</li>
+                        </ul>
+                    </li>
+                    <li>Замена кровельного материала
+                        <ul>
+                            <li>Частичная замена – замена поврежденных участков кровли (черепица, металл, битум и др.).</li>
+                            <li>Полная замена – когда весь кровельный материал требуется заменить.</li>
+                        </ul>
+                    </li>
+                    <li>Устройство гидроизоляции</li>
+                    <li>Укрепление конструкции</li>
+                    <li>Устранение протечек</li>
+                    <li>Ремонт вентилируемых крыш</li>
+                </ol>
+            <p>Выбор конкретного вида ремонта зависит от состояния крыши и причины повреждений, поэтому перед началом
+                работ рекомендуется провести комплексную оценку состояния крыши специалистом.</p>
+            </div>
+                <button class="btn2">Оставить заявку</button>
+        </div>
+        <div class="servises">
+            <div class="serves1">
+                <h4>Ремонт фасадов</h4>
+                <ol>
+                    <li>Ремонт трещин</li>
+                    <li>Покраска фасадов</li>
+                    <li>Обслуживание облицовки</li>
+                    <li>Изоляция фасадов</li>
+                    <li>Ремонт штукатурки</li>
+                    <li>Замена окон и дверей</li>
+                    <li>Установка вентилируемого фасада</li>
+                    <li>Декорирование фасадов</li>
+                </ol>
+            <p>Выбор метода ремонта зависит от состояния фасада, используемых материалов и бюджета. Помните,
+                что регулярное обслуживание и профилактика помогут избежать более серьезных проблем в будущем.</p>
+            </div>
+                <button class="btn2">Оставить заявку</button>
+        </div>
+        <div class="servises">
+            <div class="serves1">
+                <h4>Электромонтажные работы</h4>
+                <ol>
+                    <li>Установка электропроводки</li>
+                    <li>Монтаж электрооборудования</li>
+                    <li>Подключение и настройка систем автоматизации и управления</li>
+                    <li>Монтаж слаботочных систем</li>
+                    <li>Заземление и молниезащита</li>
+                    <li>Электроизмерения и тестирование</li>
+                    <li>Капитальный ремонт и модернизация</li>
+                    <li>Проектирование электросетей</li>
+                </ol>
+            <p>Эти работы могут проводиться как в жилых, так и в промышленных зданиях и сооружениях.</p>
+            </div>
+                <button class="btn2">Оставить заявку</button>
+        </div>
+        <div class="servises">
+            <div class="serves1">
+                <h4>Сантехнические работы</h4>
+                <ol>
+                    <li>Установка и замена сантехники</li>
+                    <li>Монтаж и ремонт водопроводных систем</li>
+                    <li>Монтаж и ремонт канализационных систем</li>
+                    <li>Установка отопительных систем</li>
+                    <li>Монтаж систем водоснабжения и водоотведения</li>
+                    <li>Ремонт и обслуживание</li>
+                    <li>Проверка и диагностика систем</li>
+                    <li>Изоляция труб</li>
+                    <li>Эстетические работы</li>
+                </ol>
+
+            </div>
+                <button class="btn2">Оставить заявку</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block form2 %}
+        <div class="obr1">
+        <h2>Остались вопросы?</h2>
+        <p class="obr1_p">Если вы планируете ремонт, не откладывайте решение на потом!
+            Наша команда готова помочь вам на каждом этапе — от консультации до завершения проекта.
+            Позвоните нам или оставьте заявку на сайте, и мы свяжемся с вами в кратчайшие сроки
+            для обсуждения всех деталей.</p>
+        <form id="request_form" class="form2" method="post">
+        {% csrf_token %}
+        {{ request_form_class.as_p }}
+        <input type="hidden" name="request_submit" value="True">
+        <button class="btn1" name="request_submit" type="submit">Рассчитать смету</button>
+        </form>
+        <span>* Оставляя заявку, Вы даёте <a href="../personal">согласие</a> на обработку своих персональных данных.</span>
+        </div>
+{% endblock %}
+
+{% block footer %}
+{% for cat in category2 %}
+     <p><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></p>
+        <div>
+        {% for rem in remonts2 %}
+           {% if rem.category_id.title == cat.title and rem.kvartira_id == NULL %}
+               <ul>
+                   <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a> </li>
+               </ul>
+           {% endif %}
+        {% endfor %}
+        </div>
+        <div>
+            {% for kv in kvartira %}
+
+                {% for rem in remonts2 %}
+
+                    {% if rem.kvartira_id == kv and rem.category_id.title == cat.title %}
+                    <ul>
+                        <li><a href="{{ rem.get_absolute_url }}">{{ rem.name }}</a></li>
+            </ul>
+                    {% endif %}
+                  {% endfor %}
+
+            {% endfor %}
+        </div>
+{% endfor %}
+{% endblock %}

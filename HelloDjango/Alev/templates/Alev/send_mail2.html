@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h2>Перезвонить</h2>
+
+<p>Имя - {{ call.name }}</p>
+<p>Телефон - {{ call.phone }}</p>
+{% if call.email != NULL %}
+  <p>E-mail - {{ call.email }}</p>
+{% endif %}
+{% if call.message != NULL %}
+  <p>Текст сообщения - {{ call.message }}</p>
+{% endif %}
+</body>
+</html>
